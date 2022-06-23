@@ -106,4 +106,22 @@ router.put('/:id',
     }
 });
 
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const fileContent = await fs.readFile(talkerJson, 'utf-8');
+    const talkers = JSON.parse(fileContent);
+  
+    const talkerIndex = talkers.findIndex((t) => t.id === Number(id));
+
+    const newTalkers = talkers.slice(talkerIndex, 1);
+
+    await fs.writeFile(talkerJson, JSON.stringify(newTalkers, null, 2));
+
+    return res.status(204).end();
+  } catch(err) {
+    return res.status(500).end();
+  }
+})
+
 module.exports = router;
