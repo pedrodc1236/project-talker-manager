@@ -44,6 +44,7 @@ const validateAge = require('../middlewares/middValidate/validateAge');
 const validateTalk = require('../middlewares/middValidate/validateTalk');
 const validateWatchedAt = require('../middlewares/middValidate/validateWatchedAt');
 const validateRate = require('../middlewares/middValidate/validateRate');
+const { nextTick } = require('process');
 
 router.post('/',
   validateName,
@@ -78,6 +79,31 @@ router.post('/',
   } catch(err) {
     return res.status(500).end();
   }
+});
+
+router.put('/:id', 
+  validateName,
+  validateAge,
+  validateTalk,
+  validateWatchedAt,
+  validateRate,
+  async (req, res) => {
+    try{
+      const { id } = req.params;
+      const { name, age, talk: { watchedAt, rate } } = req.body;
+      const fileContent = await fs.readFile(talkerJson, 'utf-8');
+      
+      const talkers = JSON.parse(fileContent);
+      const talkerIndex = talkers.findIndex((t) => t.id === Number(id));
+
+      talkers[talkerIndex] = {... talkers[talkerIndex],  name, age, talk: { watchedAt, rate}}
+
+      await fs.writeFile(talkerJson, JSON.stringify(talkers, null, 2));
+
+      return res.status(200).json(talkers[talkerIndex]);
+    } catch(err) {
+      return res.status(500).end();
+    }
 });
 
 module.exports = router;

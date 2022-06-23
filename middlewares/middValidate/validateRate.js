@@ -1,7 +1,7 @@
 module.exports = (req, res, next) => {
   const { talk: { rate } } = req.body;
 
-  if (!rate) {
+  if (rate === undefined) {
     res.status(400).json({ message: "O campo \"rate\" é obrigatório" })
   }
 
