@@ -1,4 +1,5 @@
 const express = require('express');
+
 const router = express.Router();
 const crypto = require('crypto');
 
@@ -10,10 +11,10 @@ router.post('/',
   validatePassword,
   (_req, res) => {
   try {
-    token = crypto.randomBytes(8).toString('hex');
+    const token = crypto.randomBytes(8).toString('hex');
 
-    return res.status(200).json({ token: token })
-  } catch(err) {
+    return res.status(200).json({ token });
+  } catch (err) {
     return res.status(500).end();
   }
 });

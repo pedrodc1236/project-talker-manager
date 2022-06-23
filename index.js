@@ -24,4 +24,3 @@ app.use('/talker', talkerRouter);
 app.listen(PORT, () => {
   console.log('Online');
 });
-
