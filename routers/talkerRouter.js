@@ -1,6 +1,8 @@
 const express = require('express');
 const fs = require('fs').promises;
 
+const authMiddleware = require('../middlewares/authMiddleware');
+
 const talkerJson = './talker.json';
 
 const router = express.Router();
@@ -20,7 +22,7 @@ router.get('/', async (_req, res) => {
   }
 });
 
-router.get('/search', async (req, res) => {
+router.get('/search', authMiddleware, async (req, res) => {
   try {
     const { q } = req.query;
     const fileContent = await fs.readFile(talkerJson, 'utf-8');
@@ -57,6 +59,8 @@ router.get('/:id', async (req, res) => {
     return res.status(500).end();
   }
 });
+
+router.use(authMiddleware);
 
 const validateName = require('../middlewares/middValidate/validateName');
 const validateAge = require('../middlewares/middValidate/validateAge');

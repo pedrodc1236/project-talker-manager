@@ -1,8 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const authMiddleware = require('./middlewares/authMiddleware');
-
 const loginRouter = require('./routers/loginRouter');
 const talkerRouter = require('./routers/talkerRouter');
 
@@ -18,7 +16,6 @@ app.get('/', (_request, response) => {
 });
 
 app.use('/login', loginRouter);
-app.use(authMiddleware);
 app.use('/talker', talkerRouter);
 
 app.listen(PORT, () => {
