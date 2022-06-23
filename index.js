@@ -1,8 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const talkerRouter = require('./routers/talkerRouter');
+const authMiddleware = require('./middlewares/authMiddleware');
+
 const loginRouter = require('./routers/loginRouter');
+const talkerRouter = require('./routers/talkerRouter');
 
 const app = express();
 app.use(bodyParser.json());
@@ -15,8 +17,9 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
-app.use('/talker', talkerRouter);
 app.use('/login', loginRouter);
+app.use(authMiddleware);
+app.use('/talker', talkerRouter);
 
 app.listen(PORT, () => {
   console.log('Online');

@@ -39,4 +39,45 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+const validateName = require('../middlewares/middValidate/validateName');
+const validateAge = require('../middlewares/middValidate/validateAge');
+const validateTalk = require('../middlewares/middValidate/validateTalk');
+const validateWatchedAt = require('../middlewares/middValidate/validateWatchedAt');
+const validateRate = require('../middlewares/middValidate/validateRate');
+
+router.post('/',
+  validateName,
+  validateAge,
+  validateTalk,
+  validateWatchedAt,
+  validateRate,
+  async (req, res) => {
+  try {
+    const { name, age, talk: { watchedAt, rate } } = req.body;
+
+    const fileContent = await fs.readFile(talkerJson, 'utf-8');
+    const talkers = JSON.parse(fileContent);
+    const lastTalker = talkers.length;
+
+    const registeredPerson = {
+      name,
+      age,
+      id: lastTalker + 1,
+      talk: {
+        watchedAt,
+        rate,
+      }
+    }
+
+    const newTalkers = [ ...talkers, registeredPerson ];
+
+    await fs.writeFile(talkerJson, JSON.stringify(newTalkers, null, 2));
+    
+    return res.status(201).json(registeredPerson);
+
+  } catch(err) {
+    return res.status(500).end();
+  }
+});
+
 module.exports = router;
